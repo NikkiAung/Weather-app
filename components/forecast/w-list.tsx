@@ -1,4 +1,4 @@
-import { FlatList, Text } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import React, { useState } from "react";
 import WItem from "./w-item";
 
@@ -49,11 +49,13 @@ const DummyWeathers: Weather[] = [
 const WList = () => {
     const [forecastData, setForecastData] = useState(DummyWeathers);
     return (
-        <FlatList
-        data={forecastData}
-        renderItem={({ item }) => <WItem w={item} />}
-        keyExtractor={(item) => item.day}
-      />
+      <View className="flex-1"> 
+          <FlatList
+            data={forecastData}
+            renderItem={({ item }) => <WItem w={item} />}
+            keyExtractor={(item) => item.day}
+          />
+      </View>
     )
 }
 
