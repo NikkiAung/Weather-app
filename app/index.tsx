@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/home/header';
 import Inputbox from '../components/home/input-box';
 import Content from '../components/home/content';
+import Info from '../components/home/info';
 
 export default function App() {
   return (
@@ -13,6 +14,11 @@ export default function App() {
                 <Header/>
                 <Inputbox/>
                 <Content/>
+                <Info/>
+                <Text className="text-center text-secondaryDark text-sm my-8">
+                Demo Weather App - Aung Nanda Oo{" "}
+                </Text>
+                <StatusBar style="dark" />
             </View>
         </ImageBackground>
     </SafeAreaView>
