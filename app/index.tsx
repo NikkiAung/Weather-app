@@ -77,7 +77,7 @@ export default function App() {
                 <Header cityname={city}/>
                 <Inputbox/>
                 {weatherInfo && <Content weatherInfo={weatherInfo} />}
-                <Info/>
+                {weatherInfo && <Info weatherInfo={weatherInfo} />}
                 <Text className="text-center text-secondaryDark text-sm my-8">
                 Demo Weather App - Aung Nanda Oo{" "}
                 </Text>
