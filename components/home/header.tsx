@@ -4,7 +4,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Theme } from '../../theme';
 import { Link } from 'expo-router';
 
-const Header = () => {
+
+type HeaderProps = {
+    cityname: string;
+};
+
+const Header = ({ cityname }: HeaderProps) => {
     return (
       <View className='flex-row justify-between items-center mt-6 mb-4'>
         <Pressable hitSlop={20}>
@@ -14,7 +19,7 @@ const Header = () => {
         </Pressable>
         <View className='flex-row items-center'> 
             <Ionicons name="location-outline" size={28} color={Theme.orange} />
-            <Text className='text-2xl font-bold'>Yangon</Text>
+            <Text className='text-2xl font-bold'>{cityname || "Loading"}</Text>
         </View>
         <Pressable hitSlop={20}>
             <Link href={'/forecast'} asChild>

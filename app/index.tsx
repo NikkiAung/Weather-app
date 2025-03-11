@@ -32,6 +32,7 @@ export type Weather = {
 export default function App() {
     const [location, setLocation] = useState<Location>({longitude: 96.1735, latitude: 16.8409,})
     const [weatherInfo, setWeatherInfo] = useState<Weather>();
+    const [city, setCity] = useState<string>("Yangon");
 
     // make sure not to use async in useEffect, causing unexpected bahviour for clean up func
     useEffect(() => {
@@ -43,7 +44,6 @@ export default function App() {
           }
     
           const currentLocation = await Location.getCurrentPositionAsync({});
-          console.log(currentLocation);
           setLocation({
             latitude: currentLocation.coords.latitude,
             longitude: currentLocation.coords.longitude,
@@ -56,15 +56,25 @@ export default function App() {
             const response_data = await response.json();
             setWeatherInfo(response_data);
         };
+
+        const getReverseGeocode = async () => {
+            const reverseGeocodeResponse = await Location.reverseGeocodeAsync({
+              latitude: location.latitude,
+              longitude: location.longitude,
+            });
+            setCity(reverseGeocodeResponse[0].city!);
+        };
+
         getPermission();
         getWeatherInfo();
+        getReverseGeocode();
       }, []);
 
   return (
     <SafeAreaView style={{paddingTop: Platform.OS === "android" ? 24 : 0}} className='bg-white'>
         <ImageBackground source={require("../assets/bg.jpg")} className='w-full h-full' blurRadius={6}>
             <View className='px-8'>
-                <Header/>
+                <Header cityname={city}/>
                 <Inputbox/>
                 {weatherInfo && <Content weatherInfo={weatherInfo} />}
                 <Info/>
