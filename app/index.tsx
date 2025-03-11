@@ -13,8 +13,26 @@ type Location = {
     longitude: number;
 }
 
+export type Weather = {
+    current_weather: {
+      temperature: number;
+      weathercode: 0;
+    };
+    daily: {
+      sunrise: string[];
+      sunset: string[];
+      temperature_2m_max: number[];
+      time: string[];
+      weathercode: number[];
+    };
+    latitude: number;
+    longtitude: number;
+  };
+
 export default function App() {
     const [location, setLocation] = useState<Location>({longitude: 96.1735, latitude: 16.8409,})
+    const [weatherInfo, setWeatherInfo] = useState<Weather>();
+
     // make sure not to use async in useEffect, causing unexpected bahviour for clean up func
     useEffect(() => {
         const getPermission = async () => {
@@ -31,8 +49,15 @@ export default function App() {
             longitude: currentLocation.coords.longitude,
           });
         };
-    
+
+        const getWeatherInfo = async () => {
+            const weather_api = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weathercode,temperature_2m_max,sunrise,sunset,windspeed_10m_max&timezone=auto&current_weather=true`;
+            const response = await fetch(weather_api);
+            const response_data = await response.json();
+            setWeatherInfo(response_data);
+        };
         getPermission();
+        getWeatherInfo();
       }, []);
 
   return (
@@ -41,7 +66,7 @@ export default function App() {
             <View className='px-8'>
                 <Header/>
                 <Inputbox/>
-                <Content/>
+                {weatherInfo && <Content weatherInfo={weatherInfo} />}
                 <Info/>
                 <Text className="text-center text-secondaryDark text-sm my-8">
                 Demo Weather App - Aung Nanda Oo{" "}
