@@ -7,6 +7,7 @@ import Content from '../components/home/content';
 import Info from '../components/home/info';
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
+import { useWeatherStore } from "../store/weather-store";
 
 type Location = {
     latitude: number;
@@ -30,8 +31,10 @@ export type Weather = {
   };
 
 export default function App() {
+    const setCurrentWeather = useWeatherStore((state) => state.setCurrentWeather);
+    const setDailyForecast = useWeatherStore((state) => state.setDailyForecast);
+    const [loading, setLoading] = useState(false);
     const [location, setLocation] = useState<Location>({longitude: 96.1735, latitude: 16.8409,})
-    const [weatherInfo, setWeatherInfo] = useState<Weather>();
     const [city, setCity] = useState<string>("Yangon");
 
     // make sure not to use async in useEffect, causing unexpected bahviour for clean up func
@@ -51,10 +54,22 @@ export default function App() {
         };
 
         const getWeatherInfo = async () => {
+            setLoading(true);
             const weather_api = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weathercode,temperature_2m_max,sunrise,sunset,windspeed_10m_max&timezone=auto&current_weather=true`;
             const response = await fetch(weather_api);
-            const response_data = await response.json();
-            setWeatherInfo(response_data);
+            const response_data: Weather = await response.json();
+            setCurrentWeather({
+              temperature: response_data.current_weather.temperature,
+              weatherCode: response_data.current_weather.weathercode,
+            });
+            setDailyForecast({
+              sunrise: response_data.daily.sunrise,
+              sunset: response_data.daily.sunset,
+              temperature_2m_max: response_data.daily.temperature_2m_max,
+              time: response_data.daily.time,
+              weathercode: response_data.daily.weathercode,
+            });
+            setLoading(false);
         };
 
         const getReverseGeocode = async () => {
@@ -74,15 +89,19 @@ export default function App() {
     <SafeAreaView style={{paddingTop: Platform.OS === "android" ? 24 : 0}} className='bg-white'>
         <ImageBackground source={require("../assets/bg.jpg")} className='w-full h-full' blurRadius={6}>
             <View className='px-8'>
-                <Header cityname={city}/>
-                <Inputbox/>
-                {weatherInfo && <Content weatherInfo={weatherInfo} />}
-                {weatherInfo && <Info weatherInfo={weatherInfo} />}
-                <Text className="text-center text-secondaryDark text-sm my-8">
-                Demo Weather App - Aung Nanda Oo{" "}
-                </Text>
-                <StatusBar style="dark" />
+                {!loading && (
+                    <>
+                        <Header cityname={city} />
+                        <Inputbox />
+                        <Content />
+                        <Info />
+                        <Text className="text-center text-secondaryDark text-sm my-8">
+                            Demo Weather App - CODE HUB{" "}
+                        </Text>
+                    </>
+                )}
             </View>
+            <StatusBar style="dark" />
         </ImageBackground>
     </SafeAreaView>
   );
