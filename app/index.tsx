@@ -7,7 +7,7 @@ import Content from '../components/home/content';
 import Info from '../components/home/info';
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import { useWeatherStore } from "../store/weather-store";
+import { useWeatherStore } from '../store/weather-store';
 
 type Location = {
     latitude: number;

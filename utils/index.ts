@@ -31,5 +31,7 @@ return WEATHER_COLLECTION.find((weather) => weather.codes?.includes(code));
 };
 
 export const getTimeOnly = (date: string) => {
-return date.split("T")[1];
+return date?.split("T")[1];
 };
+
+export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
